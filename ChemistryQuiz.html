@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Review Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+        }
+        .quiz-container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        .options label {
+            display: block;
+            margin: 8px 0;
+            padding: 10px;
+            background: #ecf0f1;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .options label:hover {
+            background: #dfe4e6;
+        }
+        .correct {
+            background-color: #4CAF50 !important; /* Green for correct answer */
+            color: white;
+            font-weight: bold;
+        }
+        .incorrect {
+            background-color: #e74c3c; /* Red for incorrect selection */
+            color: white;
+            font-weight: bold;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #results {
+            margin-top: 30px;
+            padding: 20px;
+            border-top: 2px solid #3498db;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>Chemistry Conversation Review Quiz</h1>
+    
+    <div id="quiz">
+        <!-- Quiz questions will be inserted here by JavaScript -->
+    </div>
+
+    <button onclick="checkAnswers()">Submit and Check Results</button>
+    
+    <div id="results" style="display: none;">
+        <!-- Results will be displayed here -->
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        {
+            question: "Q1: From which main mineral, primarily composed of Ca₅(PO₄)₃(F, Cl, OH), is phosphorus extracted?",
+            options: ["Hematite", "Bauxite", "Pyrolusite", "Apatite"],
+            answer: "Apatite",
+            source: "[1]"
+        },
+        {
+            question: "Q2: What is the primary role of potassium nitrate (KNO₃) in traditional black gunpowder?",
+            options: ["Acts as the fuel (Carbon source)", "Lowers the ignition temperature", "Provides oxygen for combustion", "Acts as a chemical stabilizer"],
+            answer: "Provides oxygen for combustion",
+            source: "[2]"
+        },
+        {
+            question: "Q3: What type of bond, containing phosphorus, connects the sugar of one nucleotide to the sugar of the next in the DNA backbone?",
+            options: ["Hydrogen bond", "Peptide bond", "Ionic bond", "Phosphodiester bond"],
+            answer: "Phosphodiester bond",
+            source: "[3, 4]"
+        },
+        {
+            question: "Q4: How does the addition of manganese primarily strengthen steel?",
+            options: ["It removes all oxygen from the alloy.", "It forms a protective Cr₂O₃ layer.", "It distorts the iron lattice making it harder for atoms to slip.", "It reduces the melting point of the metal."],
+            answer: "It distorts the iron lattice making it harder for atoms to slip.",
+            source: "[5]"
+        },
+        {
+            question: "Q5: What is the chemical compound that forms on the surface of stainless steel to protect the iron underneath from rust?",
+            options: ["Iron oxide (Fe₂O₃)", "Manganese sulfide (MnS)", "Chromium(III) oxide (Cr₂O₃)", "Calcium phosphate (Ca₃(PO₄)₂"],
+            answer: "Chromium(III) oxide (Cr₂O₃)",
+            source: "[6]"
+        },
+        {
+            question: "Q6: In the final step of germanium extraction, what gas is used to reduce Germanium Dioxide (GeO₂) to pure germanium metal?",
+            options: ["Carbon Monoxide (CO)", "Oxygen (O₂)", "Nitrogen (N₂)", "Hydrogen (H₂)"],
+            answer: "Hydrogen (H₂)",
+            source: "[7]"
+        },
+        {
+            question: "Q7: Which pair of gaseous pollutants is primarily responsible for forming the acids in acid rain?",
+            options: ["Carbon dioxide (CO₂) and Methane (CH₄)", "Ozone (O₃) and Water (H₂O)", "Sulfur dioxide (SO₂) and Nitrogen oxides (NOₓ)", "Helium (He) and Argon (Ar)"],
+            answer: "Sulfur dioxide (SO₂) and Nitrogen oxides (NOₓ)",
+            source: "[8, 9]"
+        },
+        {
+            question: "Q8: Chloroform enhances which calming neurotransmitter, leading to the suppression of signals between neurons and unconsciousness?",
+            options: ["Dopamine", "Serotonin", "GABA", "Adrenaline"],
+            answer: "GABA",
+            source: "[10]"
+        },
+        {
+            question: "Q9: Why is palladium used in a vehicle's catalytic converter?",
+            options: ["It absorbs exhaust gases directly.", "It acts as a lubricant for moving parts.", "It acts as a catalyst to speed up conversion to safer gases.", "It physically separates toxic particles."],
+            answer: "It acts as a catalyst to speed up conversion to safer gases.",
+            source: "[11, 12]"
+        },
+        {
+            question: "Q10: Which metal is known to be the best conductor of electricity among all metals, making it valuable for conductive traces and contacts in circuit boards?",
+            options: ["Gold", "Copper", "Silver", "Aluminum"],
+            answer: "Silver",
+            source: "[13]"
+        }
+    ];
+
+    const quizDiv = document.getElementById('quiz');
+    const resultsDiv = document.getElementById('results');
+
+    function loadQuiz() {
+        quizData.forEach((q, index) => {
+            const qElement = document.createElement('div');
+            qElement.className = 'question';
+            qElement.innerHTML = `<p><strong>${q.question}</strong></p><div class="options" id="q${index}"></div>`;
+            
+            const optionsDiv = qElement.querySelector('.options');
+            q.options.forEach((option, oIndex) => {
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = `question${index}`;
+                input.value = option;
+                input.id = `q${index}o${oIndex}`;
+
+                const label = document.createElement('label');
+                label.htmlFor = `q${index}o${oIndex}`;
+                label.textContent = option;
+                
+                optionsDiv.appendChild(input);
+                optionsDiv.appendChild(label);
+            });
+
+            quizDiv.appendChild(qElement);
+        });
+    }
+
+    function checkAnswers() {
+        let score = 0;
+        
+        quizData.forEach((q, index) => {
+            const questionElement = document.getElementById(`q${index}`);
+            const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+            let isCorrect = false;
+
+            // Disable all inputs for the question after submission
+            document.querySelectorAll(`input[name="question${index}"]`).forEach(input => {
+                input.disabled = true;
+            });
+
+            // Iterate over all options to mark the correct one (Green)
+            questionElement.querySelectorAll('label').forEach(label => {
+                if (label.textContent === q.answer) {
+                    label.classList.add('correct');
+                    
+                    // Check if the user selected this correct option
+                    if (selectedOption && selectedOption.value === q.answer) {
+                        score++;
+                        isCorrect = true;
+                    }
+                } else if (selectedOption && selectedOption.value === label.textContent && !isCorrect) {
+                    // Mark the incorrect selection red, if not already handled
+                    label.classList.add('incorrect');
+                }
+            });
+        });
+
+        // Display results
+        resultsDiv.innerHTML = `You answered <strong>${score}</strong> out of <strong>${quizData.length}</strong> questions correctly!`;
+        resultsDiv.style.display = 'block';
+
+        // Optionally disable the submit button after checking once
+        document.querySelector('button').disabled = true;
+    }
+
+    // Load the quiz when the page loads
+    window.onload = loadQuiz;
+</script>
+
+</body>
+</html>
